@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fall Break Adventure</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600&family=JetBrains+Mono:wght@400;600&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  color-scheme: dark;
+  --bg: #0a0e13;
+  --panel: #111823;
+  --line: #223044;
+  --text: #d7e2ee;
+  --dim: #8294a8;
+  --cyan: #4fd1e8;
+  --amber: #f5b942;
+  --green: #5fd68a;
+  --red: #ff6b6b;
+  --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --head: 'Rajdhani', 'Segoe UI', system-ui, sans-serif;
+  --body: 'DM Sans', 'Segoe UI', system-ui, sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body {
+  background-color: var(--bg);
+  background-image: radial-gradient(#1a2636 1px, transparent 1px);
+  background-size: 22px 22px;
+  color: var(--text);
+  font-family: var(--body);
+  font-size: clamp(16px, 1.05vw + 12px, 22px);
+  line-height: 1.5;
+  overflow: hidden;
+}
+body::after {
+  content: ""; position: fixed; inset: 0; pointer-events: none;
+  background: repeating-linear-gradient(0deg, rgba(255,255,255,0.025) 0 1px, transparent 1px 3px);
+}
+#bar { position: fixed; top: 0; left: 0; height: 4px; width: 0; z-index: 5;
+  background: linear-gradient(90deg, var(--cyan), var(--amber)); transition: width 0.25s ease; }
+.slide {
+  position: absolute; inset: 0 0 64px 0;
+  padding: clamp(20px, 5vh, 56px) clamp(18px, 6vw, 80px);
+  overflow-y: auto;
+  display: flex; flex-direction: column;
+  max-width: 1200px; margin: 0 auto;
+}
+.slide > :first-child { margin-top: auto; }
+.slide > :last-child { margin-bottom: auto; }
+.slide[hidden] { display: none; }
+.kicker { font-family: var(--mono); font-size: 0.7em; color: var(--amber); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 8px; }
+h1, h2 { font-family: var(--head); letter-spacing: 0.03em; margin: 0 0 14px; line-height: 1.1; }
+h1 { font-size: 2.8em; color: var(--cyan); }
+h2 { font-size: 2em; color: var(--text); }
+h3 { font-family: var(--head); font-size: 1.15em; letter-spacing: 0.05em; text-transform: uppercase; color: var(--amber); margin: 0 0 6px; }
+p { margin: 0 0 12px; }
+ul, ol { margin: 0 0 12px; padding-left: 1.3em; }
+li { margin-bottom: 4px; }
+.dim { color: var(--dim); }
+.big { font-size: 1.25em; }
+code { font-family: var(--mono); font-size: 0.88em; color: var(--cyan); }
+pre {
+  margin: 0 0 12px; padding: 12px 14px;
+  background: #070b10; border: 1px solid var(--line); border-left: 3px solid var(--cyan);
+  border-radius: 8px; overflow-x: auto;
+  font-family: var(--mono); font-size: 0.72em; line-height: 1.5; color: #cfe3f5;
+}
+pre.ascii { border-left-color: var(--amber); text-align: left; }
+.cols { display: grid; gap: 16px; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 820px) {
+  .cols.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cols.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+.good { border-left: 3px solid var(--green); }
+.weak { border-left: 3px solid var(--red); }
+.tag-good { color: var(--green); font-family: var(--mono); font-size: 0.75em; }
+.tag-weak { color: var(--red); font-family: var(--mono); font-size: 0.75em; }
+.gate { display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; margin: 12px 0; font-family: var(--head); font-size: 1.4em; }
+.gate .box { border: 2px solid var(--cyan); border-radius: 8px; padding: 6px 16px; }
+.gate .door { border-color: var(--amber); color: var(--amber); }
+table { border-collapse: collapse; width: 100%; font-size: 0.85em; margin-bottom: 12px; }
+th, td { border: 1px solid var(--line); padding: 6px 10px; text-align: left; vertical-align: top; }
+th { color: var(--amber); font-family: var(--head); letter-spacing: 0.05em; text-transform: uppercase; }
+nav {
+  position: fixed; left: 0; right: 0; bottom: 0; height: 64px; z-index: 6;
+  display: flex; align-items: center; justify-content: center; gap: 14px;
+  background: rgba(10, 14, 19, 0.92); border-top: 1px solid var(--line);
+}
+nav button {
+  min-width: 96px; min-height: 44px; border-radius: 8px; cursor: pointer;
+  background: #16314a; border: 1px solid #2c5a80; color: var(--text); font: inherit; font-size: 0.85em;
+}
+nav button:disabled { opacity: 0.35; cursor: default; }
+nav button:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+#count { font-family: var(--mono); font-size: 0.8em; color: var(--dim); min-width: 64px; text-align: center; }
+</style>
+</head>
+<body>
+<div id="bar"></div>
+
+<!-- 1 -->
+<section class="slide">
+  <div class="kicker">Optional credit &middot; fall break</div>
+  <h1>Fall Break Adventure</h1>
+  <p class="big">Build a choose-your-own-adventure story that a real person plays.</p>
+  <p class="dim">Branches. Loops. Functions. And one new step: you plan before you code.</p>
+  <p class="dim">Use the arrow keys, the space bar, or swipe.</p>
+</section>
+
+<!-- 2 -->
+<section class="slide" hidden>
+  <div class="kicker">The new step</div>
+  <h2>Plan first. Then code.</h2>
+  <div class="gate" aria-label="Plan, then the planning gate, then build">
+    <span class="box">PLAN</span><span>&rarr;</span><span class="box door">GATE</span><span>&rarr;</span><span class="box">BUILD</span>
+  </div>
+  <p><strong>The planning gate:</strong> your player reads your plan and says <em>yes, I would play that</em>.</p>
+  <p>No yes, no code. Planning and building are two different jobs.</p>
+  <p class="dim">Real teams work this way. A plan that is wrong costs minutes to fix. Code that is wrong costs hours.</p>
+</section>
+
+<!-- 3 -->
+<section class="slide" hidden>
+  <div class="kicker">Step 1 &middot; requirements</div>
+  <h2>Who is it for?</h2>
+  <p>Pick one real player. A classmate, a friend, a family member. Interview them. Write down what they say.</p>
+  <ol>
+    <li>What kind of stories do you like?</li>
+    <li>How many minutes do you want to play?</li>
+    <li>What do you not like in a story game?</li>
+    <li>How do you want it to end?</li>
+    <li>Where will you play?</li>
+  </ol>
+  <p class="dim">Do not argue. Do not fix. Write.</p>
+</section>
+
+<!-- 4 -->
+<section class="slide" hidden>
+  <div class="kicker">Step 2 &middot; user stories</div>
+  <h2>One sentence per need</h2>
+  <pre>As a [kind of player],
+I want [an action],
+so that [a reason].</pre>
+  <div class="cols two">
+    <div class="card good"><span class="tag-good">GOOD</span>
+      <p>As a player with 5 minutes, I want 3 or 4 choices before an ending, so that I finish before class.</p></div>
+    <div class="card weak"><span class="tag-weak">WEAK</span>
+      <p>As a player, I want a cool game.</p>
+      <p class="dim">No action. No reason. Nobody can test it.</p></div>
+  </div>
+  <p>Write 4 or 5. Each one must come from something your player said.</p>
+</section>
+
+<!-- 5 -->
+<section class="slide" hidden>
+  <div class="kicker">Step 3 &middot; acceptance checks</div>
+  <h2>A yes/no test for each story</h2>
+  <p>A check names something you can see or count.</p>
+  <div class="cols two">
+    <div class="card weak"><span class="tag-weak">WEAK</span><p>The game is fun.</p></div>
+    <div class="card good"><span class="tag-good">STRONG</span><p>I can reach an ending in 4 choices or fewer.</p></div>
+  </div>
+  <p>When the code is done, play your story and tick each check yourself. A story that fails a check is not done.</p>
+</section>
+
+<!-- 6 -->
+<section class="slide" hidden>
+  <div class="kicker">Step 4 &middot; story map</div>
+  <h2>Boxes and arrows</h2>
+  <pre class="ascii">            [passage_start]
+              /         \
+             v           v
+     [passage_door] [passage_closet]
+            |            |
+            v            v
+    [ending_caught] [passage_hallway]
+                      /        \
+                     v          v
+           [ending_free] [ending_caught]</pre>
+  <p>A box is a passage. An arrow is a choice. This map leaves out the "go back" arrows.</p>
+  <p class="dim">Core size: 8 passages, 2 endings. Open <code>widget.html</code> to explore a full map.</p>
+</section>
+
+<!-- 7 -->
+<section class="slide" hidden>
+  <div class="kicker">Step 5 &middot; build</div>
+  <h2>A passage is a function</h2>
+  <div class="cols two">
+    <div>
+      <h3>Python</h3>
+<pre>def passage_door():
+    print("The front door is locked.")
+    choice = ask("What do you do?", [
+        "Shake the handle hard",
+        "Go back",
+    ])
+    if choice == 1:
+        ending_caught()
+    elif choice == 2:
+        passage_start()</pre>
+    </div>
+    <div>
+      <h3>C++</h3>
+<pre>void passage_door() {
+    cout &lt;&lt; "The front door is locked.\n";
+    int choice = ask("What do you do?", {
+        "Shake the handle hard",
+        "Go back",
+    });
+    if (choice == 1) {
+        ending_caught();
+    } else if (choice == 2) {
+        passage_start();
+    }
+}</pre>
+    </div>
+  </div>
+  <p>Names start with <code>passage_</code> or <code>ending_</code>. The checker reads these names.</p>
+</section>
+
+<!-- 8 -->
+<section class="slide" hidden>
+  <div class="kicker">Branches</div>
+  <h2>A choice is an <code>if</code></h2>
+  <p><code>ask()</code> shows the options and returns a number. Your <code>if</code> and <code>elif</code> pick the next passage.</p>
+  <table>
+    <tr><th>In the code</th><th>On the map</th></tr>
+    <tr><td>One option in <code>ask()</code></td><td>One arrow out of the box</td></tr>
+    <tr><td>One <code>if</code> or <code>elif</code></td><td>Where that arrow points</td></tr>
+    <tr><td>A call to <code>ending_free()</code></td><td>An arrow into an ending</td></tr>
+  </table>
+  <p>Add an option and you add an arrow. Forget the <code>elif</code> and the arrow goes nowhere.</p>
+</section>
+
+<!-- 9 -->
+<section class="slide" hidden>
+  <div class="kicker">Loops</div>
+  <h2>Two loops in your story</h2>
+  <div class="cols two">
+    <div>
+      <h3>Loop 1: retry (provided)</h3>
+<pre>while True:
+    ...
+    if raw.isdigit() and 1 &lt;= int(raw) &lt;= len(options):
+        return int(raw)
+    print("Enter a number from 1 to 2.")</pre>
+      <p class="dim">It repeats until the input is valid.</p>
+    </div>
+    <div>
+      <h3>Loop 2: replay (you write it)</h3>
+<pre>playing = True
+while playing:
+    passage_start()
+    again = ask("Play again?", ["Yes", "No"])
+    if again == 2:
+        playing = False</pre>
+      <p class="dim">TODO 2 in your starter file.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 10 -->
+<section class="slide" hidden>
+  <div class="kicker">Third route</div>
+  <h2>Twee: the story as plain text</h2>
+<pre>:: Door
+The front door is locked.
+
+[[Shake the handle hard-&gt;EndingCaught]]
+[[Go back-&gt;Start]]</pre>
+  <ul>
+    <li><code>:: Name</code> starts a passage. <code>[[text-&gt;Target]]</code> is a choice.</li>
+    <li>Dialect: Twee 3 with Harlowe 3. No JavaScript.</li>
+    <li>Twine 2.6 or later opens the file and draws the map.</li>
+  </ul>
+  <p class="dim">Read <code>twee-basics.md</code>. Twee route: a cycle in the map replaces the loop.</p>
+</section>
+
+<!-- 11 -->
+<section class="slide" hidden>
+  <div class="kicker">Step 6 &middot; check</div>
+  <h2>Let the checker read your map</h2>
+<pre>python story_check.py adventure_start.py --map
+
+FINDINGS (1)
+  ORPHAN      passage_vent cannot be reached from passage_start.
+              Fix: Add a choice in another passage that leads here.</pre>
+  <div class="cols two">
+    <ul>
+      <li><strong>ORPHAN:</strong> no way to reach it</li>
+      <li><strong>DEAD END:</strong> no way out</li>
+      <li><strong>BROKEN LINK:</strong> goes nowhere</li>
+    </ul>
+    <ul>
+      <li><strong>TRAP:</strong> no way to an ending</li>
+      <li><strong>NO START</strong>, <strong>NO ENDING</strong></li>
+      <li><code>--map</code> prints a Mermaid map</li>
+    </ul>
+  </div>
+  <p class="dim">It works on Python, C++, and Twee files.</p>
+</section>
+
+<!-- 12 -->
+<section class="slide" hidden>
+  <div class="kicker">Coda &middot; optional AI helper</div>
+  <h2>Prompt in stages</h2>
+  <p>One big prompt gives an answer you cannot check. Split the work. Each stage feeds the next.</p>
+  <div class="cols three">
+    <div class="card"><h3>1 Idea</h3>
+      <p class="dim">"Ask me 5 questions, one at a time, to help me find an idea. Wait for each answer."</p></div>
+    <div class="card"><h3>2 Plan</h3>
+      <p class="dim">"Write 4 user stories from my notes. Use only things in my notes."</p></div>
+    <div class="card"><h3>3 Build</h3>
+      <p class="dim">"Write passage_x in the same style as this one. Return only the function."</p></div>
+  </div>
+  <p style="margin-top:12px">Every prompt: <strong>who</strong> is it for, <strong>how big</strong>, <strong>what shape</strong>, <strong>what happens next</strong>. One task per prompt. You check the answer.</p>
+  <p class="dim">Full prompts are in <code>coda-prompts.md</code>. Keep a log in <code>prompts.md</code>.</p>
+</section>
+
+<!-- 13 -->
+<section class="slide" hidden>
+  <div class="kicker">Go further</div>
+  <h2>Hooks and tiers</h2>
+  <div class="cols two">
+    <ul>
+      <li><strong>H1</strong> State (a variable)</li>
+      <li><strong>H2</strong> Your own input tool</li>
+      <li><strong>H3</strong> Plan vs built map</li>
+      <li><strong>H4</strong> Write a <code>.twee</code> file</li>
+    </ul>
+    <ul>
+      <li><strong>H5</strong> A web page</li>
+      <li><strong>H6</strong> Playtest report</li>
+      <li><strong>H7</strong> A second route</li>
+      <li><strong>H8</strong> Your own idea</li>
+    </ul>
+  </div>
+  <table>
+    <tr><th>Tier</th><th>What you did</th></tr>
+    <tr><td>C</td><td>All core tasks</td></tr>
+    <tr><td>B</td><td>Core and 1 hook</td></tr>
+    <tr><td>A</td><td>Core, 2 hooks, and a checker report with no findings</td></tr>
+  </table>
+</section>
+
+<!-- 14 -->
+<section class="slide" hidden>
+  <div class="kicker">Your turn</div>
+  <h2>What to do and what to send</h2>
+  <ol>
+    <li>Interview your player. Fill in <code>brief.md</code>.</li>
+    <li>Pass the planning gate.</li>
+    <li>Build. Run the checker after each passage.</li>
+    <li>Let your player play. Watch. Do not help.</li>
+  </ol>
+  <p><strong>Upload to Canvas:</strong> <code>brief.md</code>, your story file, and <code>prompts.md</code> if you used an AI helper.</p>
+  <p class="dim">Details and the rubric: <code>assignment.md</code>.</p>
+</section>
+
+<nav aria-label="Slide controls">
+  <button id="prev" type="button">&larr; Back</button>
+  <span id="count" aria-live="polite"></span>
+  <button id="next" type="button">Next &rarr;</button>
+</nav>
+
+<script>
+(function () {
+  'use strict';
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var i = 0;
+  var bar = document.getElementById('bar');
+  var count = document.getElementById('count');
+  var prev = document.getElementById('prev');
+  var next = document.getElementById('next');
+
+  function show(n) {
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach(function (s, k) { s.hidden = k !== i; });
+    slides[i].scrollTop = 0;
+    bar.style.width = ((i + 1) / slides.length * 100) + '%';
+    count.textContent = (i + 1) + ' / ' + slides.length;
+    prev.disabled = i === 0;
+    next.disabled = i === slides.length - 1;
+    try { history.replaceState(null, '', '#' + (i + 1)); } catch (e) {}
+  }
+
+  prev.addEventListener('click', function () { show(i - 1); });
+  next.addEventListener('click', function () { show(i + 1); });
+  document.addEventListener('keydown', function (ev) {
+    var k = ev.key;
+    if (k === 'ArrowRight' || k === 'PageDown' || k === ' ') { ev.preventDefault(); show(i + 1); }
+    else if (k === 'ArrowLeft' || k === 'PageUp') { ev.preventDefault(); show(i - 1); }
+    else if (k === 'Home') { show(0); }
+    else if (k === 'End') { show(slides.length - 1); }
+  });
+
+  var x0 = null, y0 = null;
+  document.addEventListener('touchstart', function (ev) {
+    x0 = ev.touches[0].clientX; y0 = ev.touches[0].clientY;
+  }, { passive: true });
+  document.addEventListener('touchend', function (ev) {
+    if (x0 === null) return;
+    var dx = ev.changedTouches[0].clientX - x0, dy = ev.changedTouches[0].clientY - y0;
+    x0 = y0 = null;
+    if (Math.abs(dx) > 60 && Math.abs(dx) > 1.5 * Math.abs(dy)) show(i + (dx < 0 ? 1 : -1));
+  }, { passive: true });
+
+  var start = parseInt((location.hash || '').slice(1), 10);
+  show(isNaN(start) ? 0 : start - 1);
+})();
+</script>
+</body>
+</html>

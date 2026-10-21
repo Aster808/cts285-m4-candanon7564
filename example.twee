@@ -1,0 +1,45 @@
+:: StoryTitle
+The Night Shift
+
+:: StoryData
+{
+  "ifid": "32ED7F51-BB19-4C18-BD5D-959282437C79",
+  "format": "Harlowe",
+  "format-version": "3.3.9",
+  "start": "Start"
+}
+
+:: Start
+You are locked in the campus lab. It is 11 PM. The lights hum.
+
+[[Try the front door->Door]]
+[[Check the server closet->Closet]]
+
+:: Door
+The front door is locked. The handle does not move.
+
+[[Shake the handle hard->EndingCaught]]
+[[Go back->Start]]
+
+:: Closet
+A key card hangs on a hook. A fan roars. A vent cover is loose.
+
+[[Take the key card->Hallway]]
+[[Go back->Start]]
+
+:: Hallway
+A side exit has a card reader. A guard sleeps in a chair nearby.
+
+[[Swipe the key card->EndingFree]]
+[[Wake the guard to ask for help->EndingCaught]]
+
+:: Vent
+The vent is tight. Cold air blows from the far end. You see the roof.
+
+[[Climb out onto the roof->EndingFree]]
+
+:: EndingFree
+You step into the cool night air. You are free!
+
+:: EndingCaught
+The guard turns on the light. You are caught.
