@@ -55,6 +55,19 @@ The automated tests in `test_prototype.py` check:
 - Answer comparison.
 - Attempt limits.
 
+### Manual Persistence Test
+- Started the prototype and entered an incorrect answer.
+- Quit before using the second attempt.
+- Restarted the application.
+- Confirmed that the application restored the session
+  and showed Try 2 of 2.
+
+### Automated Test Results
+- Ran: python -m unittest test_prototype.py
+- Result: 5 tests passed.
+- Ran: python app.py
+- Result: Application launched successfully.
+
 The application also needs a manual quit-and-reopen test to demonstrate saved session state.
 
 ## Evaluation and Revision
