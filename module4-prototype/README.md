@@ -28,7 +28,7 @@ How should DataMan check a learner's answer, provide feedback after an incorrect
 - Provides sample math problems.
 - Loads and saves learner session state.
 - Preserves the problem ID, attempt count, and completion status.
-- Uses temporary JSON storage instead of a final database.
+- Uses local JSON file storage as a temporary substitute for the final database.
 
 ## State Design
 The prototype tracks:
@@ -56,19 +56,15 @@ The automated tests in `test_prototype.py` check:
 - Attempt limits.
 
 ### Manual Persistence Test
-- Started the prototype and entered an incorrect answer.
-- Quit before using the second attempt.
-- Restarted the application.
-- Confirmed that the application restored the session
-  and showed Try 2 of 2.
+- The prototype is designed to save session progress when the learner quits.
+- A manual quit-and-reopen test is still needed to verify that the saved attempt count is restored.
+- Persistence has not yet been confirmed through manual testing.
 
 ### Automated Test Results
 - Ran: python -m unittest test_prototype.py
 - Result: 5 tests passed.
 - Ran: python app.py
 - Result: Application launched successfully.
-
-The application also needs a manual quit-and-reopen test to demonstrate saved session state.
 
 ## Evaluation and Revision
 
