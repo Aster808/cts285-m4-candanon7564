@@ -24,12 +24,12 @@ Learner → check an answer. Question: What must the learner see after the first
 How should the system track the learner's attempts and decide when to allow a retry or reveal the correct answer?
 
 ### Data / Persistence
-[complete in studio]
+The data-model investigation showed that the system needs to store more than the learner's current score. It needs to preserve learner information, practice sessions, individual problems, and attempts. The prototype uses a local JSON file to save the problem ID, number of attempts used, and completion status. This provides a simple way to test whether progress can be restored after closing and reopening the application. A full database is still needed for permanent learner and curator history.
 
 ### Memory Bank Constraint
-[complete in studio]
+The Memory Bank constraint stress test showed that the system must preserve important learner progress without depending only on information displayed in the interface. If session information is lost when the application closes, the learner's progress and attempt history may not be available later. The design therefore needs a separate data layer that can save and retrieve session information.
 
-**Constraint boundary selected:** [not selected]
+**Constraint boundary selected:** The selected constraint boundary is that learner session and attempt information must remain available outside the interface when the application closes and reopens. The interface should not be responsible for permanently storing learner progress. The data layer is responsible for saving and retrieving that information.
 
 ### Interaction
 The interaction evidence showed that a simple score panel is not enough. The system needs to save the learner's history, sessions, and individual problem attempts so a curator can review scores, missed problems, and how many tries the learner used later.
@@ -39,7 +39,7 @@ The interaction evidence showed that a simple score panel is not enough. The sys
 The answer-checking rules, attempt counter, retry rules, and decision to reveal the correct answer should be handled by the business logic, not the text interface.
 
 **Data that can be stubbed now:**
-[complete in studio]
+The prototype can use sample math problems and a local JSON file instead of a full database. It can store the current problem ID, attempt count, completion status, and problem status. Real learner accounts, curator permissions, complete practice-set records, individual attempt histories, and multi-user database access can remain future work.
 
 ## New Complication
 **Response:** Revise state boundary
