@@ -70,6 +70,9 @@ The automated tests in `test_prototype.py` check:
 - Result: 5 tests passed.
 - Ran: python app.py
 - Result: Application launched successfully.
+  
+### Observation from Testing
+During testing, I noticed that entering text such as `abc` or entering `15.0` instead of `15` counts as an incorrect attempt. This made me realize that the prototype does not currently distinguish between an invalid input format and an incorrect answer. A future revision could validate the input before using an attempt. This would make the feedback clearer for learners.
 
 ## Evaluation and Revision
 
