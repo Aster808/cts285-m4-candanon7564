@@ -56,9 +56,14 @@ The automated tests in `test_prototype.py` check:
 - Attempt limits.
 
 ### Manual Persistence Test
-- The prototype is designed to save session progress when the learner quits.
-- A manual quit-and-reopen test is still needed to verify that the saved attempt count is restored.
-- Persistence has not yet been confirmed through manual testing.
+- Deleted the previous session data to start fresh.
+- Entered an incorrect answer (10).
+- Quit the application using Q.
+- Restarted the application.
+- Confirmed that it restored the session and displayed
+  "Resuming session: Try 2 of 2."
+- Entered the correct answer (15).
+- Confirmed that the problem completed successfully.
 
 ### Automated Test Results
 - Ran: python -m unittest test_prototype.py
