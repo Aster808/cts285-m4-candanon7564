@@ -28,10 +28,11 @@ def get_problem(problem_id=1):
 def load_session():
     if not DATA_FILE.exists():
         return {
-            "problem_id": 1,
-            "attempts_used": 0,
-            "completed": False
-        }
+    "problem_id": 1,
+    "attempts_used": 0,
+    "completed": False,
+    "status": "open"
+}
 
     with open(DATA_FILE, "r") as file:
         return json.load(file)
@@ -44,9 +45,10 @@ def save_session(session):
 
 def reset_session():
     session = {
-        "problem_id": 1,
-        "attempts_used": 0,
-        "completed": False
-    }
+    "problem_id": 1,
+    "attempts_used": 0,
+    "completed": False,
+    "status": "open"
+}
     save_session(session)
     return session
