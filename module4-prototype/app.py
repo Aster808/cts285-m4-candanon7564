@@ -20,9 +20,9 @@ def run():
     print("\nQuestion:", problem["question"])
 
     # Check whether the problem was already completed.
-    if session["completed"]:
-        print("\nThis problem has already been completed.")
-        return
+    if session["status"] != "open":
+    print("\nThis problem is already closed.")
+    return
 
     if session["attempts_used"] == 1:
         print("\nResuming session: Try 2 of 2.")
@@ -49,12 +49,10 @@ def run():
         )
 
         session["attempts_used"] = result["attempts_used"]
+session["completed"] = result["completed"]
+session["status"] = result["status"]
 
-        if result["status"] == "correct":
-            session["completed"] = True
-
-        # Save state after every submitted answer.
-        save_session(session)
+save_session(session)
 
         print("\n" + result["feedback"])
 
