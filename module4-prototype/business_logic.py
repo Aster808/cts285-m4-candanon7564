@@ -8,25 +8,28 @@ def check_answer(user_answer, correct_answer):
 
 
 def evaluate_attempt(user_answer, correct_answer, attempts_used):
-    """Apply DataMan's two-attempt feedback rule."""
+    """Apply the two-attempt rule and return the resulting problem state."""
     attempts_used += 1
 
     if check_answer(user_answer, correct_answer):
         return {
-            "status": "correct",
+            "status": "completed",
+            "completed": True,
             "attempts_used": attempts_used,
             "feedback": "Correct! You completed the problem."
         }
 
     if attempts_used < MAX_ATTEMPTS:
         return {
-            "status": "retry",
+            "status": "open",
+            "completed": False,
             "attempts_used": attempts_used,
             "feedback": "Incorrect. You have one try remaining."
         }
 
     return {
         "status": "revealed",
+        "completed": False,
         "attempts_used": attempts_used,
         "feedback": (
             f"Maximum attempts reached. "
