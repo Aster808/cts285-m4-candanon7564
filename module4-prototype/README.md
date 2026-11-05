@@ -35,7 +35,8 @@ The prototype tracks:
 - Problem ID
 - Number of attempts used
 - Whether the problem is completed
-
+- Problem status (open, completed, or revealed).
+  
 Session information is saved outside the text interface so that unfinished progress can be restored when the program is reopened.
 
 ## Acceptance Criteria
@@ -44,7 +45,7 @@ Session information is saved outside the text interface so that unfinished progr
 - AC-2: An incorrect first answer provides feedback and allows another attempt.
 - AC-3: A second incorrect answer reveals the correct answer.
 - AC-4: Reopening an unfinished session restores the previous attempt count.
-- AC-5: Reopening a completed problem preserves its completed status.
+- AC-5: Reopening a completed or revealed problem preserves its previous status.
 
 ## Testing
 
@@ -64,6 +65,14 @@ The automated tests in `test_prototype.py` check:
   "Resuming session: Try 2 of 2."
 - Entered the correct answer (15).
 - Confirmed that the problem completed successfully.
+
+### Revealed Status Persistence Test
+- Started a fresh session.
+- Entered an incorrect answer twice.
+- Confirmed that the correct answer was revealed.
+- Closed and restarted the application.
+- Confirmed that the application displayed "This problem is already closed."
+- Confirmed that the revealed answer remained available after restarting.
 
 ### Automated Test Results
 - Ran: python -m unittest test_prototype.py
